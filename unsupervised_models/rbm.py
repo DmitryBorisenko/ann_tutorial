@@ -301,10 +301,12 @@ def extract_mnist_features_via_rbm(n_hidden, learning_rate=0.1, batch_size=32,
 
     # Plotting department =====================================================
     # Error vs. training iterations plot
-    plt.plot(errors_binary)
-    plt.xlabel("Update Step")
-    plt.ylabel("Error")
-    plt.title("Training Error")
+    fig0, ax = plt.subplots(1, 1, facecolor="white")
+    ax.plot(errors_binary)
+    ax.set_xlabel("Update Step")
+    ax.set_ylabel("Reconstruction Error")
+    ax.set_title("Learning Dynamics")
+    fig0.tight_layout()
 
     # Plot features implied by weights of each hidden unit: total of n_hidden
     # images laid out as tile
@@ -313,12 +315,12 @@ def extract_mnist_features_via_rbm(n_hidden, learning_rate=0.1, batch_size=32,
                            tile_shape=(20, 25), tile_spacing=(1, 1))
         )
 
-    fig, pic_ax = plt.subplots(1, 1, figsize=(8, 8))
+    fig, pic_ax = plt.subplots(1, 1, figsize=(8, 8), facecolor="white")
     pic_plot = pic_ax.imshow(pic)
     pic_plot.set_cmap('gray')
     pic_ax.set_yticklabels([])
     pic_ax.set_xticklabels([])
-    pic_ax.set_title("Input features learned by every hidden units")
+    pic_ax.set_title("Input Features Learned by every Hidden Unit")
     fig.tight_layout()
 
     # Pick a single hidden unit and visualize its connections to the visible
@@ -329,12 +331,12 @@ def extract_mnist_features_via_rbm(n_hidden, learning_rate=0.1, batch_size=32,
 
     pic2 = Image.fromarray(hidden_unit_image)
 
-    fig2, pic_ax = plt.subplots(1, 1, figsize=(8, 8))
+    fig2, pic_ax = plt.subplots(1, 1, figsize=(8, 8), facecolor="white")
     pic_plot = pic_ax.imshow(pic2)
     pic_plot.set_cmap('gray')
     pic_ax.set_yticklabels([])
     pic_ax.set_xticklabels([])
-    pic_ax.set_title("Input features learned by the first hidden unit")
+    pic_ax.set_title("Input Features Learned by the first Hidden Unit")
     fig.tight_layout()
 
     # Pick a sample of 5 images from the test set
@@ -369,7 +371,8 @@ def extract_mnist_features_via_rbm(n_hidden, learning_rate=0.1, batch_size=32,
         ]
 
     # Plot'em
-    fig3, axes = plt.subplots(5, 3, sharey=True, figsize=(7, 9))
+    fig3, axes = plt.subplots(5, 3, sharey=True, figsize=(7, 9),
+                              facecolor="white")
 
     for col_num, pics in enumerate([pic_X, pic_corrupted, pic_reconstructed]):
         for row_num, pic in enumerate(pics):
@@ -379,13 +382,17 @@ def extract_mnist_features_via_rbm(n_hidden, learning_rate=0.1, batch_size=32,
             ax.set_yticklabels([])
             ax.set_xticklabels([])
 
-    fig3.suptitle("Test Set: \n "
-                  "Original -> Corrupted Original -> Reconstructed Image")
+    axes[0, 0].set_title("Original")
+    axes[0, 1].set_title("Corrupted")
+    axes[0, 2].set_title("Reconstructed")
+    fig3.suptitle("Test Set Images", fontsize=14)
+    fig3.tight_layout()
+    fig3.subplots_adjust(top=0.9)
     plt.show()
 
 
 if __name__ == "__main__":
-    extract_mnist_features_via_rbm(n_hidden=500, learning_rate=1,
+    extract_mnist_features_via_rbm(n_hidden=500, learning_rate=0.01,
                                    batch_size=100, num_epochs=5,
                                    input_to_binary=False)
 
