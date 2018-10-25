@@ -197,7 +197,7 @@ def train_rbm(rbm, training_data, batch_size=32, num_epochs=5,
     return rbm, np.array(errors_binary), np.array(errors_prob)
 
 
-def construct_fine_tuning_mlp(rbms, last_layer="mnist", **compile_kwargs):
+def construct_fine_tuning_mlp(rbms, last_layers="mnist", **compile_kwargs):
     """Unfolds a list of restricted Boltzmann machines into multilayer
     perceptron and compiles a keras sequential model.
 
@@ -205,8 +205,8 @@ def construct_fine_tuning_mlp(rbms, last_layer="mnist", **compile_kwargs):
     ----------
     rbms: list
         of BinaryRBM instances containing trained RBMs to unfold into MLP
-    last_layer: keras.layer instance or string
-        the last layer of the MLP to be used for supervised fine-tuning. If
+    last_layers: list of keras.layer instances or string
+        the last layers of the MLP to be used for supervised fine-tuning. If
         'mnist' creates a softmax layer with ten units for the generic MNIST
         task. Default is 'mnist'
     compile_kwargs: dict
@@ -231,12 +231,13 @@ def construct_fine_tuning_mlp(rbms, last_layer="mnist", **compile_kwargs):
                 )
 
     # Add the last layer on top
-    if last_layer is "mnist":
+    if last_layers is "mnist":
         mlp.add(Dense(input_shape=[rbms[-1].n_hidden], units=10,
                       activation="softmax", name="output_softmax_layer")
                 )
     else:
-        mlp.add(last_layer)
+        for layer in last_layers:
+            mlp.add(layer)
 
     # Compile and return
     mlp.compile(**compile_kwargs)
@@ -300,7 +301,7 @@ def main():
     [rbm.weights_to_numpy() for rbm in rbms]
 
     # Unfold into an MLP, print summary, and fit
-    mlp = construct_fine_tuning_mlp(rbms, last_layer=mlp_last_layer,
+    mlp = construct_fine_tuning_mlp(rbms, last_layers=mlp_last_layer,
                                     **mlp_compile_kwargs)
 
     print("\nDone with the RBM pre-training. Unfolding into the following MLP "

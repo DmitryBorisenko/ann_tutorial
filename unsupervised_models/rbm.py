@@ -395,4 +395,3 @@ if __name__ == "__main__":
     extract_mnist_features_via_rbm(n_hidden=500, learning_rate=0.01,
                                    batch_size=100, num_epochs=5,
                                    input_to_binary=False)
-
