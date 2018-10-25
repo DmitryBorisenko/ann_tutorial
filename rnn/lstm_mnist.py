@@ -132,13 +132,12 @@ def main(n_hidden, learning_rate, batch_size, training_iters):
 
         print("Optimization finished.")
 
-        # Calculate accuracy for 128 mnist test images
-        test_len = 256
-        test_data = test_X[:test_len].reshape((-1, n_steps, n_seq))
-        test_label = test_y[:test_len]
+        # Test accuracy
+        test_data = test_X.reshape((-1, n_steps, n_seq))
+        test_label = test_y
 
         print(
-            "Testing Accuracy:",
+            "Test set accuracy:",
             sess.run(accuracy, feed_dict={x: test_data, y: test_label})
             )
 
